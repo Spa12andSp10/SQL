@@ -50,29 +50,29 @@ ORDER BY `period` ASC;
 SOURCE --path/to/stats.sql;
 -- 2.2
 -- а)
-SELECT DAY(`date`) AS `dates`, SUM(`hits`) AS `all_hits`, SUM(`loads`) AS `all_loads` FROM `stats` GROUP BY DAY(`date`) ORDER BY DAY(`date`);
+SELECT `date` AS `dates`, SUM(`hits`) AS `all_hits`, SUM(`loads`) AS `all_loads` FROM `stats` GROUP BY `dates` ORDER BY `date`;
 -- б)
 SELECT `country` AS `countries`, SUM(`hits`) AS `all_hits`, SUM(`loads`) AS `all_loads` FROM `stats` GROUP BY `country` ORDER BY `country`;
 -- в)
-SELECT DAY(`date`) AS `dates`, `country` AS `countries`, SUM(`hits`) AS `all_hits`, SUM(`loads`) AS `all_loads` FROM `stats` GROUP BY `dates`, `countries` ORDER BY `dates`;
+SELECT `date` AS `dates`, `country` AS `countries`, SUM(`hits`) AS `all_hits`, SUM(`loads`) AS `all_loads` FROM `stats` GROUP BY `dates`, `countries` ORDER BY `dates`;
 -- 2.3
 -- а)
-SELECT DAY(`date`) AS `dates`, AVG(`hits`) AS `avg_hits` FROM `stats` GROUP BY `dates` ORDER BY `dates`;
+SELECT AVG(`sum_hits`) FROM (SELECT `date`, SUM(`hits`) AS `sum_hits` FROM `stats` GROUP BY `date`) AS t1;
 -- б)
-SELECT `country` AS `countries`, AVG(`hits`) AS `avg_hits` FROM `stats` GROUP BY `countries` ORDER BY `countries`;
+SELECT AVG(`sum_hits`) FROM (SELECT `country`, SUM(`hits`) AS `sum_hits` FROM `stats` GROUP BY `date`) AS t2;
 -- 2.4
 -- а)
-SELECT DAY(`date`) AS `dates`, AVG(`loads`) AS `avg_loads` FROM `stats` GROUP BY `dates` ORDER BY `dates`;
+SELECT AVG(`sum_loads`) FROM (SELECT `date`, SUM(`loads`) AS `sum_loads` FROM `stats` GROUP BY `date`) AS t1;
 -- б)
-SELECT `country` AS `countries`, AVG(`loads`) AS `avg_loads` FROM `stats` GROUP BY `countries` ORDER BY `countries`;
+SELECT AVG(`sum_loads`) FROM (SELECT `country`, SUM(`loads`) AS `sum_loads` FROM `stats` GROUP BY `date`) AS t2;
 -- 2.5
 -- а)
-SELECT DAY(`date`) AS `dates`, MIN(`loads`) AS `min_loads`, MAX(`loads`) AS `max_loads` FROM `stats` GROUP BY `dates` ORDER BY `dates`;
+SELECT MIN(`sum_loads`), MAX(`sum_loads`) FROM (SELECT `date`, SUM(`loads`) AS `sum_loads` FROM `stats` GROUP BY `date`) AS t1;
 -- б)
-SELECT `country` AS `countries`, MIN(`loads`) AS `min_loads`, MAX(`loads`) AS `max_loads` FROM `stats` GROUP BY `country` ORDER BY `country`;
+SELECT MIN(`sum_loads`), MAX(`sum_loads`) FROM (SELECT `country`, SUM(`loads`) AS `sum_loads` FROM `stats` GROUP BY `country`) AS t2;
 -- 2.6
-SELECT DAY(`date`) AS `dates`, SUM(`loads`) / SUM(`hits`) AS `conversion` FROM `stats` GROUP BY `dates` ORDER BY `dates`;
+SELECT `date` AS `dates`, SUM(`hits`) / SUM(`loads`) AS `conversion` FROM `stats` GROUP BY `dates` ORDER BY `dates`;
 -- 2.7
-SELECT DAY(`date`) AS `dates`, SUM(`loads`) / SUM(`hits`) AS `conversion` FROM `stats` GROUP BY `dates` ORDER BY `conversion` DESC LIMIT 1;
+SELECT `date` AS `dates`, SUM(`hits`) / SUM(`loads`) AS `conversion` FROM `stats` GROUP BY `dates` ORDER BY `conversion` DESC LIMIT 1;
 -- 2.8
-SELECT DAY(`date`) AS `dates`, SUM(`loads`) / SUM(`hits`) AS `conversion` FROM `stats` GROUP BY `dates` ORDER BY `conversion` DESC LIMIT 5;
+SELECT `country` AS `countries`, SUM(`hits`) / SUM(`loads`) AS `conversion` FROM `stats` GROUP BY `country` ORDER BY `conversion` DESC LIMIT 5;
